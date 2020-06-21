@@ -28,13 +28,17 @@ diretorios () { #PROCURA POR DIRETORIOS
 
 arquivos () { # PROCURA POR ARQUIVOS
 	# PESQUISA PELOS NOMES DA WORDLIST SEM EXTENSAO
+#	echo -n "curl -s -H 'User-Agent: DesecTool' -o /dev/null -w '%{http_code}' $1/$2"
 	resposta=$(curl -s -H 'User-Agent: DesecTool' -o /dev/null -w '%{http_code}' $1/$2)
+#	echo " - $resposta"
 	if [ $resposta == "200" ]
 	then
 		printf "\r\033[33;1m$4|- Arquivo encontrado:\033[37;1m $1/$2\n\033[m"
 	fi
 	# PESQUISA PELOS NOMES DA WORDLIST COM EXTENSAO
+#	echo -n "curl -s -H 'User-Agent: DesecTool' -o /dev/null -w '%{http_code}' $1/$2.$3"
 	resposta=$(curl -s -H 'User-Agent: DesecTool' -o /dev/null -w '%{http_code}' $1/$2.$3)
+#	echo " - $resposta"
 	if [ $resposta == "200" ]
 	then
 		printf "\r\033[33;1m$4|- Arquivo $3 encontrado:\033[37;1m $1/$2.$3\n\033[m"
@@ -115,7 +119,7 @@ then
 			# CONTADOR DE NOMES
 			printf "\r \033[31;1m$cont de $nomes nomes\033[m"
 			
-			if [[ $elemento -eq "" ]]
+			if [ -z "$elemento" ]
 			then
 				arquivos "$1" $arquivo $3 " "
 			else
