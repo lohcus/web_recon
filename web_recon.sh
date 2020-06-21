@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Criado por Daniel Domingues
-#Versao 1.2
+#Versao 1.3
 #https://github.com/lohcus
 
 array_diretorios=("")
@@ -72,14 +72,17 @@ arquivos () { # PROCURA POR ARQUIVOS
 	resposta=$(curl -s -A "$agent" -o /dev/null -w '%{http_code}' $1/$2)
 	if [ $resposta == "200" ]
 	then
-		printf "\r\033[33;1m$4|- Arquivo encontrado:\033[37;1m $1/$2\n\033[m"
+		printf "\r\033[33;1m$3|- Arquivo encontrado:\033[37;1m $1/$2\n\033[m"
 	fi
 	# PESQUISA PELOS NOMES DA WORDLIST COM EXTENSAO
-	resposta=$(curl -s -A "$agent" -o /dev/null -w '%{http_code}' $1/$2.$3)
-	if [ $resposta == "200" ]
-	then
-		printf "\r\033[33;1m$4|- Arquivo $3 encontrado:\033[37;1m $1/$2.$3\n\033[m"
-	fi
+	for extensao in "${array_extensao[@]}"
+	do
+		resposta=$(curl -s -A "$agent" -o /dev/null -w '%{http_code}' $1/$2.$extensao)
+		if [ $resposta == "200" ]
+		then
+			printf "\r\033[33;1m$3|- Arquivo $extensao encontrado:\033[37;1m $1/$2.$extensao\n\033[m"
+		fi
+	done
 }
 #=================================================================================================================
 
@@ -96,6 +99,7 @@ printf "\033[37;1mLOHCUS WEB RECON\n\033[m"
 deep=9999
 agent="LohcusWeb"
 cor=31
+declare -a array_extensao
 
 # VERIFICA AS OPCOES DIGITADAS
 while getopts "hu:w:x:d:a:" OPTION
@@ -109,7 +113,7 @@ do
 	  		# QUANTIDADE DE NOMES NA WORDLIST
 			nomes=$(wc -l $wordlist | cut -d " " -f 1)
          	;;
-      	"x") extensao=$OPTARG
+      	"x") IFS=' , ' read -r -a array_extensao <<< "$OPTARG"
         	;;
       	"d") deep=$OPTARG
         	;;
@@ -120,6 +124,8 @@ do
    esac
 done
 shift $((OPTIND-1))
+
+echo $extensao
 
 # VERIFICA SE FORAM DIGITADOS OS PARAMETROS OBRIGATORIOS -u E -w
 [ -z "$url" -o -z "$wordlist" ] && uso
@@ -173,7 +179,7 @@ done
 divisao
 
 # SE FOR DIGITADO O TERCEIRO PARAMETRO (EXTENSAO) PESQUISA POR ARQUIVOS NA RAIZ E EM CADA DIRETORIO ENCONTRADO, UTILIZANDO A MESMA WORDLIST
-if [ ! -z $extensao ]
+if [ ! -z ${#extensao[*]} ]
 then
 for elemento in "${array_diretorios[@]}"
 do
@@ -184,9 +190,9 @@ do
 		printf "\r\033[31;1m>$cont de $nomes nomes\033[m" # CONTADOR DE NOMES	
 		if [ -z "$elemento" ]
 		then
-			arquivos "$url" $arquivo $extensao " "
+			arquivos "$url" $arquivo " "
 		else
-			arquivos "$url/$elemento" $arquivo $extensao " "
+			arquivos "$url/$elemento" $arquivo " "
 		fi
 		cont=$(($cont+1))
 	done
