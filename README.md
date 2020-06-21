@@ -7,4 +7,4 @@ Opcoes:
 	-x extensao			Pesquisa por extensao [opcional]
 	-d profundidade			Profundidade da pesquisa (min=1) [opcional]
 
-Exemplo: ./web_recon.sh -w lista.txt -u localhost -a Mozila -x php,html,aspx -d 5
+Exemplo: ./web_recon_options.sh -w lista.txt -u localhost -a "Mozilla/5.0" -x php,html,aspx -d 5
