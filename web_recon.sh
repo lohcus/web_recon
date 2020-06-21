@@ -17,7 +17,7 @@ function uso() {
 	printf "\033[37;1m	-u url				URL base a ser pesquisada\n\033[m"
 	printf "\033[37;1m	-w wordlist			Wordlist utilizada na pesquisa\n\033[m"
 	printf "\033[37;1m	-a \"user-agent\"			String User Agent [opcional]\n\033[m"
-	printf "\033[37;1m	-x extensao			Pesquisa por extensao [opcional]\n\033[m"
+	printf "\033[37;1m	-x extensao,extensao...		Pesquisa por extensoes [opcional]\n\033[m"
 	printf "\033[37;1m	-d profundidade			Profundidade da pesquisa (numerico, min=1) [opcional]\n\033[m"
 	divisao
 	exit 1
